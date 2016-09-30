@@ -1,24 +1,36 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
+
 
 using namespace std;
-bool testUpdateTopScore();
+using namespace std::chrono;
 
-vector<int> my_sort(vector<int> &in) //two loop sorting
+bool testUpdateTopScore(int);
+
+vector<int> my_sort(vector<int> &in) 
 {
-	for (int i = 0; i < in.size(); i++)
+	int j = 0;
+	for (int i = 0;i<in.size() - 1;i++) //one for loop
 	{
-		for (int j = 0; j < in.size() - 1; j++)
+		if (in[i] < in[i + 1])
 		{
-			if (in[j] < in[j + 1])
-			{
-				int temp = in[j];
-				in[j] = in[j + 1];
-				in[j + 1] = temp;
-			}
+			int temp = in[i];
+			in[i] = in[i + 1];
+			in[i + 1] = temp;
+		}
+		if (i == in.size() - 2)//reset index
+		{
+			i = -1;
+			j++;
+		}
+		if (j == in.size() - 2)//end sorting
+		{
+			break;
 		}
 	}
+
 	return in;
 }
 
@@ -30,20 +42,17 @@ bool updateTopScores(vector<int> &in, vector<int> & out)
 
 void main()
 {
-	vector<int> topScores = { 443, 439, 438, 438, 434, 418, 418, 417, 413, 411, 444 };
-	vector<int> topScores_sorted;
-	updateTopScores(topScores, topScores_sorted);
-
-	for (int i = 0; i < topScores_sorted.size(); i++)
-	{
-		cout << topScores_sorted[i] << " , ";//print sorted vector
-	}
-
-	cout << endl;
+	
 	//test case
+	int a = 10;
 	for (int i = 0; i < 5; i++)
 	{
-		cout << testUpdateTopScore() << endl;
+		high_resolution_clock::time_point t1 = high_resolution_clock::now();
+		cout << testUpdateTopScore(a);
+		high_resolution_clock::time_point t2 = high_resolution_clock::now();
+		duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+		std::cout << ":  It took  " << time_span.count() << " seconds  for "<<a<<" data " << endl;
+		a *= 5;
 	}
 
 }
@@ -51,19 +60,14 @@ void main()
 
 /////////////////test///////////////
 
-bool testUpdateTopScore()
+bool testUpdateTopScore(int size)
 {
-	int arr[10];
-	for (int i = 0; i < 10; i++)
+	vector<int> vec;
+	for (int i = 0; i < size; i++)
 	{
-		arr[i] = rand() % 100 + 1;
+		vec.push_back(rand() % 100 + 1);
 	}
 
-	vector<int> vec;
-	for (int i = 0; i < 10; i++)
-	{
-		vec.push_back(arr[i]);
-	}
 
 	sort(vec.rbegin(), vec.rend());
 
